@@ -5,17 +5,27 @@ import java.sql.Statement;
 
 public class MyJDBC {
     public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/jdbc-demo";
+        String user = "root";
+        String password = "1231";
+        
         try
         {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc-demo", "root", "1231");
+            // 1. Get a connection to database
+            Connection connection = DriverManager.getConnection(url, user, password);
 
+            // 2. Create a statement
             Statement statement = connection.createStatement();
 
-            ResultSet resultSet = statement.executeQuery("select * from people");
+            // 3. Execute SQL query
+            String sql = "insert into employees " +
+                    " (last_name, first_name, e-mail)" +
+                    " values ('Brown', 'David', 'david.brown@foo.com')";
 
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString("firstname"));
-            }
+            statement.executeQuery(sql);
+
+            System.out.println("Insert Complete.");
+
         }catch (Exception e)
         {
             e.printStackTrace();
