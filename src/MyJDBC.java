@@ -13,9 +13,6 @@ public class MyJDBC {
 
     static void InsertInto(String tableName, String[] varNames, String[] varValues) throws SQLException
     {
-        String varNameStr = String.join(", ", varNames);
-        String varValueStr = String.join(", ", varValues);
-
         String sql = "insert into " + tableName +
                 " (" +String.join(", ", varNames) + ")" +
                 " values (" + String.join(", ", varValues) +")";
@@ -26,6 +23,13 @@ public class MyJDBC {
     {
         String sql = "update " + tableName +
                 " set " + varName + "=" + varValue + " where " + condition;
+        statement.executeUpdate(sql);
+    }
+
+    static void DeleteData(String tableName, String condition) throws SQLException
+    {
+        String sql = "delete from " + tableName +
+                " where " + condition;
         statement.executeUpdate(sql);
     }
 
@@ -40,10 +44,9 @@ public class MyJDBC {
             statement = connection.createStatement();
 
             // 3. Execute SQL query
-            UpdateInfo("employees", "email", "'demo@luv2code.com'", "id=1");
-//            statement.executeUpdate(sql);
-
-//            System.out.println("Insert Complete.");
+//            InsertInto("employees", new String[]{"last_name", "first_name", "email"}, new String[]{"'Public'","'Mary'","'mary.public@foo.com'"});
+//            UpdateInfo("employees", "email", "'demo@luv2code.com'", "id=1");
+//            DeleteData("employees", "last_name='Brown'");
 
         }catch (Exception e)
         {
