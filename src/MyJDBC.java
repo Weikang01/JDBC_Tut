@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class MyJDBC {
 
@@ -10,6 +7,16 @@ public class MyJDBC {
     static String password = "1231";
     static Connection connection;
     static Statement statement;
+
+    static void ShowTable(String tableName, String colName)
+    {
+        String sql = "select " + colName + " from " + tableName;
+    }
+
+    static void ShowTable(String tableName)
+    {
+        String sql = "select * from " + tableName;
+    }
 
     static void InsertInto(String tableName, String[] varNames, String[] varValues) throws SQLException
     {
@@ -33,6 +40,8 @@ public class MyJDBC {
         statement.executeUpdate(sql);
     }
 
+
+
     public static void main(String[] args) {
 
         try
@@ -44,7 +53,26 @@ public class MyJDBC {
             statement = connection.createStatement();
 
             // 3. Execute SQL query
-//            InsertInto("employees", new String[]{"last_name", "first_name", "email"}, new String[]{"'Public'","'Mary'","'mary.public@foo.com'"});
+            // Create the prepared statement
+            // Set parameter values for type and position
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from employees where salary > ? and department=?");
+
+            preparedStatement.setDouble(1, 80000);
+            preparedStatement.setString(2, "Legal");
+
+            // now execute the query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            display(resultSet);
+
+            preparedStatement.setDouble(1, 50000);
+            preparedStatement.setString(2, "HR");
+
+            // now execute the query
+            resultSet = preparedStatement.executeQuery();
+
+            display(resultSet);
+//            InsertInto("employees", new String[]{"last_name", "first_name", "email", "department", "salary"}, new String[]{"'Public'","'Mary'","'mary.public@foo.com'", "'HR'", "55000.00"});
 //            UpdateInfo("employees", "email", "'demo@luv2code.com'", "id=1");
 //            DeleteData("employees", "last_name='Brown'");
 
@@ -52,5 +80,10 @@ public class MyJDBC {
         {
             e.printStackTrace();
         }
+    }
+
+    private static void display(ResultSet resultSet) throws SQLException {
+        while (resultSet.next())
+            System.out.println(resultSet.getString("last_name"));
     }
 }
